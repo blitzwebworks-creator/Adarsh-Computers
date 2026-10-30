@@ -1,6 +1,0 @@
-import Link from "next/link";
-
-export const metadata = { title: "Terms and conditions" };
-export default function TermsPage() {
-  return <section className="section-padding legal-page"><div className="container"><span className="eyebrow">Legal</span><h1>Terms and conditions</h1><p className="prose-copy">The website provides information about Adarsh Computers and a catalogue of products and services. Product listings are maintained by the store. Availability, specifications, delivery arrangements and any shipping charge are confirmed by the store.</p><h2>Enquiries and WhatsApp orders</h2><p className="prose-copy">Submitting an enquiry does not reserve a product. A checkout request is saved with a pending status so the store can review it. It is not an order confirmation or a payment. You must send the prepared message through WhatsApp, and the store must confirm availability and the final order before it is considered confirmed. No online payment is taken on this website.</p><h2>Website information</h2><p className="prose-copy">The business may update product listings, service details and website content over time. Please contact the store if you need clarification about information shown here.</p><Link className="text-link" href="/contact">Contact Adarsh Computers</Link></div></section>;
-}
