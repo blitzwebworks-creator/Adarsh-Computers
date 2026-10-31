@@ -219,7 +219,7 @@ on conflict (slug) do nothing;
 insert into public.site_settings (key, value, is_public) values
   ('home', '{"headline":"Your Trusted Computer Hardware Partner.","description":"Thoughtful help with computer hardware and peripherals, from choosing the right setup to checking product availability.","tagline":"Making Technology Work For You"}'::jsonb, true),
   ('about', '{"description":"Adarsh Computers is a computer hardware and peripherals business based in Nehru Place, New Delhi.","story":"We help customers explore computer hardware and peripherals with clear product information and a direct local point of contact."}'::jsonb, true),
-  ('business', '{"name":"Adarsh Computers","owner":"Siyacharan","email":"adarshcomputer203@gmail.com","phone":"7678570614","secondary_phone":"8506006504","address":"203, Osian Building, 12, Nehru Place, Near Nehru Enclave Metro Station Gate No. 2, New Delhi - 110019","gstin":"07FNERPK4184N1ZE","whatsapp":"7678570614","brands":["Dell","Intel","LG","HP","Canon","Lenovo"],"map_url":"https://maps.google.com/?q=203%2C%20Osian%20Building%2C%2012%2C%20Nehru%20Place%2C%20New%20Delhi%20110019"}'::jsonb, true)
+  ('business', '{"name":"Adarsh Computers","owner":"Siyacharan","email":"adarshcomputer203@gmail.com","phone":"7678570614","secondary_phone":"8506006504","address":"203, Osian Building, 12, Nehru Place, Near Nehru Enclave Metro Station Gate No. 2, New Delhi - 110019","gstin":"07FNERPK4184N1ZE","whatsapp":"7678570614","brands":["Dell","Intel","LG","HP","Canon","Lenovo"],"map_url":"https://maps.app.goo.gl/ys6mLm71Rk6hENJr9"}'::jsonb, true)
 on conflict (key) do nothing;
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)

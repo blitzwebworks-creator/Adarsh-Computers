@@ -4,6 +4,7 @@ import { ArrowUpRight, MapPin, Phone, UserRound } from "lucide-react";
 import type { BusinessSettings } from "@/lib/site-data";
 import { Button } from "@/components/ui/button";
 import { CartButton } from "@/components/site/CartButton";
+import { MobileMenu } from "@/components/site/MobileMenu";
 import { whatsappHref } from "@/lib/utils";
 
 const links = [{ href: "/products", label: "Products" }, { href: "/services", label: "Services" }, { href: "/about", label: "About" }, { href: "/contact", label: "Contact" }];
@@ -18,7 +19,7 @@ export function SiteHeader({ business }: { business: BusinessSettings | null }) 
       <Link className="account-header-link" href="/account" aria-label="Customer account"><UserRound size={19} /><span>Account</span></Link>
       <CartButton />
       <div className="nav-actions"><Button variant="outline" size="sm" asChild><Link href="/admin/login">Admin</Link></Button><Button size="sm" className="nav-enquiry" asChild><Link href={business?.whatsapp ? whatsappHref(business.whatsapp, "Hello, I have a product enquiry.") : "/contact"} target={business?.whatsapp ? "_blank" : undefined} rel={business?.whatsapp ? "noreferrer" : undefined}>Get in touch <ArrowUpRight size={15} /></Link></Button></div>
-      <details className="mobile-menu"><summary aria-label="Open navigation"><span /><span /><span /></summary><nav aria-label="Mobile navigation">{links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}<Link href="/account">Customer account</Link><Link href="/admin/login">Admin login</Link></nav></details>
+      <MobileMenu />
     </div>
   </header>;
 }
