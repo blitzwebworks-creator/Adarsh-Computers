@@ -1250,7 +1250,44 @@ button,input,textarea,select { font-family:inherit; }
 }
 @media (prefers-reduced-motion:reduce) {
   html { scroll-behavior:auto; }
-  .hero-section::before,.hero-copy .hero-kicker,.hero-copy h1,.hero-copy > p,.hero-copy .hero-actions,.hero-copy .hero-caption,.hero-art,.hero-art::before,.chip-card,.tag-top,.tag-bottom,.desktop-nav a::after,.mobile-menu-toggle,.mobile-dropdown,.mobile-dropdown a,.orbit-two,.scroll-reveal-item,.category-card,.product-card,.service-card,.testimonial-card,.reason-item,.contact-detail,.about-panel,[data-slot="button"] { animation:none !important; transition:none !important; }
+  .hero-section::before,.hero-copy .hero-kicker,.hero-copy h1,.hero-copy > p,.hero-copy .hero-actions,.hero-copy .hero-caption,.hero-art,.hero-art::before,.chip-card,.tag-top,.tag-bottom,.desktop-nav a::after,.mobile-menu-toggle,.mobile-dropdown,.mobile-dropdown a,.orbit-two,.scroll-reveal-item,.category-card,.product-card,.service-card,.testimonial-card,.reason-item,.contact-detail,.about-panel,.about-photo,.about-photo img,.about-directions-button,[data-slot="button"] { animation:none !important; transition:none !important; }
   .scroll-reveal-item { opacity:1; transform:none; }
   .hero-copy .hero-kicker,.hero-copy h1,.hero-copy > p,.hero-copy .hero-actions,.hero-copy .hero-caption,.hero-art { opacity:1; transform:none; }
+}
+
+/* About page shop story: original signboard photos and readable brand accents. */
+.about-page-hero { background:radial-gradient(ellipse at 85% 14%,rgba(212,239,114,.2),transparent 32%),linear-gradient(135deg,#f8faf8,#edf3ef); }
+.about-story-section { background:radial-gradient(ellipse at 84% 5%,rgba(212,239,114,.13),transparent 30%),var(--background); }
+.about-story-grid { display:grid; grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr); align-items:start; gap:clamp(30px,5vw,72px); }
+.about-story-copy > .eyebrow { display:inline-block; margin-bottom:14px; }
+.about-description { display:grid; gap:14px; }
+.about-description p { max-width:62ch; margin:0; color:#53645b; font-size:15px; line-height:1.82; }
+.about-directions-button { min-height:46px; margin-top:22px; border-color:#D4EF72; background:#D4EF72; color:#092820; box-shadow:0 9px 25px rgba(55,92,40,.12); }
+.about-directions-button:hover { border-color:#c1dc61; background:#c1dc61; color:#092820; }
+.about-photo-gallery { min-width:0; display:grid; grid-template-columns:minmax(0,1.55fr) minmax(150px,.95fr); align-items:start; gap:14px; }
+.about-photo { min-width:0; overflow:hidden; margin:0; border:1px solid #dbe5de; border-radius:19px; background:#fff; box-shadow:0 12px 34px rgba(12,52,37,.08); }
+.about-photo-media { position:relative; width:100%; overflow:hidden; background:#edf3ef; }
+.about-photo-media-featured { aspect-ratio:408 / 306; }
+.about-photo-media-supporting { aspect-ratio:681 / 797; }
+.about-photo-media img { object-fit:cover; transition:transform .55s cubic-bezier(.2,.7,.25,1); }
+.about-photo-media-featured img { object-position:center center; }
+.about-photo-media-supporting img { object-position:center 8%; }
+.about-photo:hover .about-photo-media img { transform:scale(1.035); }
+.about-photo figcaption { padding:10px 12px 11px; color:#68776e; font-size:11px; font-weight:650; line-height:1.4; }
+.about-photo-featured { grid-column:1; grid-row:1; }
+.about-photo-supporting { grid-column:2; grid-row:1; }
+.about-photo-business { grid-column:1/-1; grid-row:2; }
+.about-photo-business.about-panel { padding:24px 27px; border-color:#dbe5de; border-radius:19px; }
+.about-photo-business.about-panel h3 { margin-top:17px; }
+@media (max-width:900px) {
+  .about-story-grid { grid-template-columns:1fr; gap:36px; }
+  .about-story-copy { max-width:760px; }
+}
+@media (max-width:520px) {
+  .about-description { gap:12px; }
+  .about-description p { font-size:14px; line-height:1.76; }
+  .about-photo-gallery { grid-template-columns:1fr; gap:13px; }
+  .about-photo-featured,.about-photo-supporting,.about-photo-business { grid-column:1; grid-row:auto; }
+  .about-photo-media-supporting { aspect-ratio:681 / 797; }
+  .about-photo-business.about-panel { padding:20px; }
 }

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 
-const itemSelector = ".category-card, .product-card, .reason-item, .why-intro, .testimonial-card, .service-card, .about-copy, .about-panel, .contact-info, .contact-detail, .contact-form-card, .section-title-row, .page-hero-inner";
+const itemSelector = ".category-card, .product-card, .reason-item, .why-intro, .testimonial-card, .service-card, .about-copy, .about-panel, .about-photo, .contact-info, .contact-detail, .contact-form-card, .section-title-row, .page-hero-inner";
 
 export function ScrollReveal({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLDivElement>(null);
