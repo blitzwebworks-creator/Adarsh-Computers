@@ -20,7 +20,7 @@ export default async function HomePage() {
         <div className="hero-kicker"><span className="hero-kicker-dot" /> Computer hardware & peripherals <span className="hero-kicker-line" /></div>
         <h1>{settings.home?.headline || "Your Trusted Computer Hardware Partner."}</h1>
         <p>{settings.home?.description || "Computer hardware and peripherals in Nehru Place, New Delhi."}</p>
-        <div className="hero-actions"><Button size="lg" variant="lime" asChild><Link href="/products">Explore products <ArrowUpRight size={18} /></Link></Button><Button size="lg" variant="outline" className="hero-contact-button" asChild><Link href="/contact">Contact us <ArrowRight size={17} /></Link></Button></div>
+        <div className="hero-actions"><Button size="lg" variant="teal" asChild><Link href="/products">Explore products <ArrowUpRight size={18} /></Link></Button><Button size="lg" variant="outline" className="hero-contact-button" asChild><Link href="/contact">Contact us <ArrowRight size={17} /></Link></Button></div>
         <div className="hero-caption"><span className="caption-line" /> Serving customers from Nehru Place, New Delhi</div>
       </div>
       <div className="hero-art" aria-label="Computer hardware and peripherals" role="img"><div className="art-grid" /><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" />
@@ -48,6 +48,6 @@ export default async function HomePage() {
 
     {testimonials.length > 0 && <section className="section-padding testimonial-section"><div className="container"><SectionTitle eyebrow="Customer voices" title="What customers say" /><div className="testimonial-grid">{testimonials.slice(0, 3).map((item) => <blockquote className="testimonial-card" key={item.id}><span className="eyebrow">Customer feedback</span><p>“{item.quote}”</p><footer><strong>{item.customer_name}</strong>{item.company && <span>{item.company}</span>}</footer></blockquote>)}</div></div></section>}
 
-    <section className="closing-section"><div className="container closing-card"><div><span className="eyebrow eyebrow-light">Have a question?</span><h2>Let’s get the right technology in your hands.</h2><p>Tell us what you’re looking for, and we’ll help you take the next step.</p></div><Button size="lg" variant="lime" asChild><Link href="/contact">Start an enquiry <ArrowUpRight size={18} /></Link></Button></div></section>
+    <section className="closing-section"><div className="container closing-card"><div><span className="eyebrow eyebrow-light">Have a question?</span><h2>Let’s get the right technology in your hands.</h2><p>Tell us what you’re looking for, and we’ll help you take the next step.</p></div><Button size="lg" variant="teal" asChild><Link href="/contact">Start an enquiry <ArrowUpRight size={18} /></Link></Button></div></section>
   </>;
 }

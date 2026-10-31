@@ -12,7 +12,7 @@ const buttonVariants = cva("inline-flex items-center justify-center gap-2 whites
       outline: "border border-border bg-white text-foreground hover:border-primary/50 hover:text-primary",
       ghost: "text-foreground hover:bg-muted",
       danger: "bg-destructive text-white hover:brightness-95",
-      lime: "bg-accent text-accent-foreground hover:brightness-95",
+      teal: "bg-accent text-[#062923] shadow-[0_9px_24px_rgba(11,145,127,.2)] hover:brightness-95",
     },
     size: { default: "h-11 px-5", sm: "h-9 px-4 text-xs", lg: "h-13 px-7 text-base", icon: "size-10 rounded-full p-0" },
   },
