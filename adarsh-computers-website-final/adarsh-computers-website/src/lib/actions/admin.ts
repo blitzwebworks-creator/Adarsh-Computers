@@ -44,6 +44,24 @@ async function removeImage(supabase: Awaited<ReturnType<typeof requireAdmin>>["s
 export async function saveProductAction(formData: FormData) {
   const { supabase } = await requireAdmin();
   const id = text(formData, "id") || randomUUID();
+  if (!z.string().uuid().safeParse(id).success) redirect("/admin/products?error=id");
+  const name = text(formData, "name");
+  const brand = text(formData, "brand");
+  const description = text(formData, "description");
+  const categoryId = text(formData, "category_id");
+  const price = text(formData, "price");
+  const compareAtPrice = text(formData, "compare_at_price");
+  const stockQuantity = text(formData, "stock_quantity");
+  const availability = text(formData, "availability");
+  if (!z.string().min(2).max(160).safeParse(name).success) redirect("/admin/products?error=name");
+  if (!z.string().max(100).safeParse(brand).success) redirect("/admin/products?error=brand");
+  if (!z.string().max(4000).safeParse(description).success) redirect("/admin/products?error=description");
+  if (categoryId && !z.string().uuid().safeParse(categoryId).success) redirect("/admin/products?error=category");
+  const validMoney = (value: string) => value === "" || (/^(?:\d+)(?:\.\d{1,2})?$/.test(value) && Number(value) <= 9999999999.99);
+  if (!validMoney(price)) redirect("/admin/products?error=price");
+  if (!validMoney(compareAtPrice) || (compareAtPrice !== "" && (price === "" || Number(compareAtPrice) <= Number(price)))) redirect("/admin/products?error=compare_price");
+  if (!(stockQuantity === "" || (/^\d+$/.test(stockQuantity) && Number(stockQuantity) <= 1000000))) redirect("/admin/products?error=stock");
+  if (!z.enum(["In stock", "Available to order", "Contact for availability", "Out of stock"]).safeParse(availability).success) redirect("/admin/products?error=availability");
   const parsed = z.object({
     name: z.string().min(2).max(160),
     brand: z.string().max(100),
@@ -53,26 +71,33 @@ export async function saveProductAction(formData: FormData) {
     compare_at_price: z.string().refine((value) => value === "" || (Number.isFinite(Number(value)) && Number(value) >= 0), "Invalid compare price"),
     stock_quantity: z.string().refine((value) => value === "" || (/^\d+$/.test(value) && Number(value) <= 1000000), "Invalid inventory quantity"),
     availability: z.enum(["In stock", "Available to order", "Contact for availability", "Out of stock"]),
-  }).safeParse({ name: text(formData, "name"), brand: text(formData, "brand"), description: text(formData, "description"), category_id: text(formData, "category_id"), price: text(formData, "price"), compare_at_price: text(formData, "compare_at_price"), stock_quantity: text(formData, "stock_quantity"), availability: text(formData, "availability") });
+  }).safeParse({ name, brand, description, category_id: categoryId, price, compare_at_price: compareAtPrice, stock_quantity: stockQuantity, availability });
   if (!parsed.success) redirect("/admin/products?error=validation");
 
-  const imageUrls = [...new Set(text(formData, "image_urls").split(/\r?\n/).map((url) => url.trim()).filter(Boolean))].slice(0, 8);
+  const imageUrls = [...new Set(text(formData, "image_urls").split(/\r?\n/).map((url) => url.trim()).filter(Boolean))];
+  if (imageUrls.length > 8) redirect("/admin/products?error=gallery_count");
   const storageOrigin = new URL(getSupabaseEnv().url).origin;
-  if (imageUrls.some((url) => { try { const parsedUrl = new URL(url); return parsedUrl.protocol !== "https:" || parsedUrl.origin !== storageOrigin || !parsedUrl.pathname.startsWith("/storage/v1/object/public/business-media/"); } catch { return true; } })) redirect("/admin/products?error=validation");
+  if (imageUrls.some((url) => { try { const parsedUrl = new URL(url); return parsedUrl.protocol !== "https:" || parsedUrl.origin !== storageOrigin || !parsedUrl.pathname.startsWith("/storage/v1/object/public/business-media/"); } catch { return true; } })) redirect("/admin/products?error=gallery_url");
   const specifications: Record<string, string> = {};
   const specificationLines = text(formData, "specifications").split(/\r?\n/).filter((line) => line.trim());
-  if (specificationLines.length > 30) redirect("/admin/products?error=validation");
+  if (specificationLines.length > 30) redirect("/admin/products?error=specifications_count");
   for (const line of specificationLines) {
     const separator = line.indexOf(":");
-    if (separator < 1) redirect("/admin/products?error=validation");
+    if (separator < 1) redirect("/admin/products?error=specifications_format");
     const key = line.slice(0, separator).trim();
     const value = line.slice(separator + 1).trim();
-    if (!key || key.length > 60 || !value || value.length > 240) redirect("/admin/products?error=validation");
+    if (!key || key.length > 60 || !value || value.length > 240) redirect("/admin/products?error=specifications_format");
     specifications[key] = value;
   }
-  if ((parsed.data.compare_at_price && !parsed.data.price) || (parsed.data.price && parsed.data.compare_at_price && Number(parsed.data.compare_at_price) <= Number(parsed.data.price))) redirect("/admin/products?error=validation");
 
-  const previousImage = text(formData, "existing_image") || null;
+  // Read stored media from the database. Hidden form fields are user-editable and
+  // must not be trusted when deciding which storage objects can be removed.
+  let existingProduct = await supabase.from("products").select("image_url,image_urls").eq("id", id).maybeSingle();
+  if (isMissingOptionalProductColumn(existingProduct.error)) existingProduct = await supabase.from("products").select("image_url").eq("id", id).maybeSingle();
+  if (existingProduct.error) redirect("/admin/products?error=save");
+  const existingMedia = existingProduct.data as { image_url: string | null; image_urls?: string[] | null } | null;
+  const previousImage = existingMedia?.image_url || null;
+  const previousGallery = existingMedia?.image_urls || [];
   const imageFile = fileFrom(formData);
   let imageUrl = previousImage;
   if (imageFile) {
@@ -110,9 +135,11 @@ export async function saveProductAction(formData: FormData) {
     result = await supabase.from("products").upsert(writePayload, { onConflict: "id" });
   }
   const { error } = result;
-  if (error) redirect("/admin/products?error=save");
+  if (error) {
+    if (imageFile && imageUrl && imageUrl !== previousImage) await removeImage(supabase, imageUrl);
+    redirect("/admin/products?error=save");
+  }
   if (previousImage && previousImage !== imageUrl) await removeImage(supabase, previousImage);
-  const previousGallery = text(formData, "existing_gallery").split(/\r?\n/).filter(Boolean);
   for (const oldImage of previousGallery) if (!imageUrls.includes(oldImage) && oldImage !== imageUrl) await removeImage(supabase, oldImage);
   revalidatePath("/products");
   revalidatePath("/");

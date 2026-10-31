@@ -6,6 +6,7 @@ import { AdminNotice, AdminPageHeader, FormField } from "@/components/admin/Admi
 import { ConfirmForm } from "@/components/admin/ConfirmForm";
 import { ImagePicker } from "@/components/site/ImagePicker";
 import { Button } from "@/components/ui/button";
+import { FormSubmitButton } from "@/components/ui/FormSubmitButton";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { deleteProductAction, saveProductAction } from "@/lib/actions/admin";
@@ -24,17 +25,17 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
     <div className="admin-two-column">
       <section className="admin-panel surface" id="product-form"><div className="admin-panel-heading"><div><span className="eyebrow">{editing ? "Edit listing" : "New listing"}</span><h2>{editing ? "Update product" : "Add a product"}</h2></div>{editing && <Button variant="ghost" size="sm" asChild><Link href="/admin/products#product-form">Cancel edit</Link></Button>}</div>
         <form action={saveProductAction} className="admin-form" encType="multipart/form-data">
-          <input type="hidden" name="id" value={newProductId} /><input type="hidden" name="existing_image" value={editing?.image_url || ""} /><input type="hidden" name="existing_gallery" value={(editing?.image_urls || []).join("\n")} />
+          <input type="hidden" name="id" value={newProductId} />
           <FormField label="Product name"><Input name="name" required minLength={2} maxLength={160} defaultValue={editing?.name || ""} placeholder="Enter a product name" /></FormField>
           <div className="admin-form-grid"><FormField label="Brand"><Input name="brand" maxLength={100} defaultValue={editing?.brand || ""} placeholder="Brand" /></FormField><FormField label="Category"><select className="admin-select" name="category_id" defaultValue={editing?.category_id || ""}><option value="">Select a category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></FormField></div>
           <FormField label="Description"><Textarea name="description" maxLength={4000} defaultValue={editing?.description || ""} placeholder="Share the useful product details." /></FormField>
-          <div className="admin-form-grid"><FormField label="Price (INR, optional)"><Input name="price" type="number" min="0" step="0.01" defaultValue={editing?.price ?? ""} placeholder="Leave blank to quote on enquiry" /></FormField><FormField label="Compare-at price (optional)"><Input name="compare_at_price" type="number" min="0" step="0.01" defaultValue={editing?.compare_at_price ?? ""} placeholder="Original price for a discount display" /></FormField></div>
+          <div className="admin-form-grid"><FormField label="Price (INR, optional)"><Input name="price" type="number" min="0" max="9999999999.99" step="0.01" defaultValue={editing?.price ?? ""} placeholder="Leave blank to quote on enquiry" /></FormField><FormField label="Compare-at price (optional)" hint="Requires a product price and must be higher than it."><Input name="compare_at_price" type="number" min="0" max="9999999999.99" step="0.01" defaultValue={editing?.compare_at_price ?? ""} placeholder="Original price for a discount display" /></FormField></div>
           <div className="admin-form-grid"><FormField label="Availability"><select className="admin-select" name="availability" defaultValue={editing?.availability || "Contact for availability"}><option>In stock</option><option>Available to order</option><option>Contact for availability</option><option>Out of stock</option></select></FormField><FormField label="Stock quantity (optional)" hint="Leave blank if stock is not tracked. Enter 0 to prevent orders for this item."><Input name="stock_quantity" type="number" min="0" max="1000000" step="1" defaultValue={editing?.stock_quantity ?? ""} placeholder="Not tracked" /></FormField></div>
           <div className="admin-field"><span>Product image</span><ImagePicker currentImage={editing?.image_url} /></div>
           <FormField label="Additional product image URLs" hint="Paste up to 8 public business-media URLs from Supabase Storage, one per line."><Textarea name="image_urls" rows={3} defaultValue={(editing?.image_urls || []).join("\n")} placeholder="https://…supabase.co/storage/v1/object/public/business-media/products/..." /></FormField>
           <FormField label="Technical specifications" hint="Enter one item per line in Label: Value format."><Textarea name="specifications" rows={4} defaultValue={Object.entries(editing?.specifications || {}).map(([key, value]) => `${key}: ${value}`).join("\n")} placeholder={'Memory: 8 GB GDDR6\nCooling: Dual fan'} /></FormField>
           <div className="admin-checkbox-row"><label><input type="checkbox" name="is_published" defaultChecked={editing ? editing.is_published : true} /> Publish on website</label><label><input type="checkbox" name="is_featured" defaultChecked={editing?.is_featured || false} /> Feature on homepage</label></div>
-          <Button type="submit"><Plus size={15} /> {editing ? "Save product" : "Add product"}</Button>
+          <FormSubmitButton pendingText={editing ? "Saving product…" : "Adding product…"}><Plus size={15} /> {editing ? "Save product" : "Add product"}</FormSubmitButton>
         </form>
       </section>
       <section className="admin-panel surface"><div className="admin-panel-heading"><div><span className="eyebrow">Inventory</span><h2>{products.length} products</h2></div></div>
