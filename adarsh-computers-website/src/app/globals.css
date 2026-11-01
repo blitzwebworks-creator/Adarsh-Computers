@@ -69,6 +69,7 @@ button, input, textarea, select { font: inherit; }
 .nav-shell { min-height:78px; display:flex; align-items:center; gap:40px; }
 .brand-lockup { display:inline-flex; align-items:center; gap:10px; flex:0 0 auto; }
 .brand-mark { width:38px; height:38px; display:grid; place-items:center; position:relative; background:#075d46; color:white; border-radius:12px 12px 12px 4px; font-size:22px; font-weight:900; line-height:1; }
+.brand-logo { width:42px; height:42px; flex:0 0 auto; border:1px solid #e2e8e5; border-radius:50%; background:#fff; object-fit:contain; }
 .brand-mark i { position:absolute; width:7px; height:7px; right:6px; bottom:6px; background:#48dfcf; border-radius:50%; }
 .brand-copy { display:flex; flex-direction:column; line-height:1; gap:4px; }
 .brand-copy strong { font-size:15px; font-weight:900; letter-spacing:.13em; }
@@ -401,6 +402,7 @@ button, input, textarea, select { font: inherit; }
 .auth-back:hover { color:#79f2e2; }
 .auth-card { position:relative; z-index:1; width:min(100%,460px); padding:clamp(28px,5vw,48px); border:1px solid rgba(255,255,255,.72); border-radius:24px; background:rgba(255,255,255,.97); box-shadow:0 30px 90px rgba(0,0,0,.23),0 2px 8px rgba(3,27,19,.08); }
 .auth-card-mark { width:45px; height:45px; display:grid; place-items:center; margin-bottom:26px; border:1px solid #d5e7dc; border-radius:15px; background:#eaf3ed; color:#075d46; font-size:12px; font-weight:900; letter-spacing:.08em; }
+.auth-card-logo { width:45px; height:45px; display:block; margin-bottom:26px; border:1px solid #d5e7dc; border-radius:50%; background:#fff; object-fit:contain; }
 .auth-card > .eyebrow { display:block; }
 .auth-card h1 { margin:10px 0 9px; color:#14251e; font-size:clamp(30px,5vw,38px); letter-spacing:-.055em; line-height:1.06; }
 .auth-card > p:not(.auth-error):not(.auth-success) { margin:0; color:#67766e; font-size:13px; line-height:1.65; }
@@ -436,6 +438,7 @@ button, input, textarea, select { font: inherit; }
 .admin-sidebar-head { display:flex; align-items:center; justify-content:space-between; min-height:54px; padding:0 7px 21px; border-bottom:1px solid rgba(225,241,231,.12); }
 .admin-brand { display:inline-flex; align-items:center; gap:11px; color:#fff; }
 .admin-brand-mark { width:36px; height:36px; display:grid; place-items:center; border-radius:11px; background:#48dfcf; color:#06352e; font-size:20px; font-weight:950; box-shadow:0 6px 16px rgba(0,0,0,.16); }
+.admin-brand-logo { width:40px; height:40px; flex:0 0 auto; border:1px solid rgba(255,255,255,.8); border-radius:50%; background:#fff; object-fit:contain; box-shadow:0 6px 16px rgba(0,0,0,.16); }
 .admin-brand > span:last-child { display:grid; gap:3px; }
 .admin-brand strong { font-size:13px; letter-spacing:.1em; line-height:1; }
 .admin-brand small { color:#9bb8a8; font-size:8px; font-weight:800; letter-spacing:.22em; }
@@ -1073,6 +1076,7 @@ button,input,textarea,select { font-family:inherit; }
 .navigation-loader-card { width:min(100%,400px); display:grid; justify-items:center; gap:15px; padding:34px 28px 32px; border:1px solid #e1e9e2; border-radius:23px; background:#fff; box-shadow:0 22px 65px rgba(15,57,39,.12),0 3px 12px rgba(15,57,39,.04); text-align:center; }
 .navigation-loader-brand { display:flex; align-items:center; gap:10px; margin-bottom:3px; }
 .navigation-loader-brand .brand-mark { width:44px; height:44px; }
+.navigation-loader-brand .brand-logo { width:44px; height:44px; }
 .navigation-loader-brand .brand-copy { display:grid; text-align:left; }
 .navigation-loader-ring { position:relative; display:grid; width:40px; height:40px; place-items:center; border:3px solid #e4eddf; border-radius:50%; }
 .navigation-loader-ring::before { position:absolute; inset:-3px; border:3px solid transparent; border-top-color:#12a890; border-right-color:#48dfcf; border-radius:50%; content:""; animation:spin .85s linear infinite; }

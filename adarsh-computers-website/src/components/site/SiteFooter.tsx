@@ -5,7 +5,7 @@ import type { BusinessSettings, HomeSettings } from "@/lib/site-data";
 import { getBusinessMapEmbedUrl, getBusinessMapUrl } from "@/lib/maps";
 
 export function SiteFooter({ business, home }: { business: BusinessSettings | null; home: HomeSettings | null }) {
-  const brandMark = business?.logo_url ? <Image src={business.logo_url} alt="" width={38} height={38} className="brand-logo" /> : <span className="brand-mark"><span>A</span><i /></span>;
+  const brandMark = <Image src={business?.logo_url || "/brand/adarsh-computers-logo.png"} alt="" width={42} height={42} className="brand-logo" />;
   const mapEmbedUrl = getBusinessMapEmbedUrl(business);
   const mapUrl = getBusinessMapUrl(business);
   return <footer className="site-footer">

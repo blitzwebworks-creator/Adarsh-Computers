@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 
 const navigationEvent = "adarsh:navigation-start";
@@ -105,7 +106,7 @@ export function NavigationFeedback() {
     >
       <div className="navigation-loader-card">
         <div className="navigation-loader-brand" aria-label="Adarsh Computers">
-          <span className="brand-mark"><span>A</span><i /></span>
+          <Image src="/brand/adarsh-computers-logo.png" alt="" width={44} height={44} className="brand-logo" />
           <span className="brand-copy"><strong>ADARSH</strong><small>COMPUTERS</small></span>
         </div>
         <span className="navigation-loader-ring" aria-hidden="true"><i /></span>

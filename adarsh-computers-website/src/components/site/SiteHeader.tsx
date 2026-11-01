@@ -10,7 +10,7 @@ import { whatsappHref } from "@/lib/utils";
 const links = [{ href: "/products", label: "Products" }, { href: "/services", label: "Services" }, { href: "/about", label: "About" }, { href: "/contact", label: "Contact" }];
 
 export function SiteHeader({ business }: { business: BusinessSettings | null }) {
-  const brandMark = business?.logo_url ? <Image src={business.logo_url} alt="" width={38} height={38} className="brand-logo" /> : <span className="brand-mark"><span>A</span><i /></span>;
+  const brandMark = <Image src={business?.logo_url || "/brand/adarsh-computers-logo.png"} alt="" width={42} height={42} className="brand-logo" priority />;
   return <header className="site-header">
     <div className="topline"><div className="container topline-inner"><span><MapPin size={13} aria-hidden="true" /> Nehru Place · New Delhi</span>{business?.phone && <a href={"tel:" + business.phone}><Phone size={13} aria-hidden="true" /> {business.phone}</a>}</div></div>
     <div className="container nav-shell">

@@ -30,7 +30,7 @@ const navigation = [
 export function AdminShell({ children, email, notifications, unreadCount }: { children: React.ReactNode; email: string; notifications: AdminNotification[]; unreadCount: number | null }) {
   return <div className="admin-layout">
     <aside className="admin-sidebar">
-      <div className="admin-sidebar-head"><Link href="/" className="admin-brand"><span className="admin-brand-mark">A</span><span><strong>ADARSH</strong><small>ADMIN CONSOLE</small></span></Link>
+      <div className="admin-sidebar-head"><Link href="/" className="admin-brand"><Image src="/brand/adarsh-computers-logo.png" alt="" width={40} height={40} className="admin-brand-logo" /><span><strong>ADARSH</strong><small>ADMIN CONSOLE</small></span></Link>
         <details className="admin-mobile-menu"><summary aria-label="Open admin navigation"><Menu size={20} /></summary><nav>{navigation.map(({ href, label, icon: Icon }) => <Link key={href} href={href}><Icon size={16} />{label}</Link>)}<form action={signOutAction}><button><LogOut size={16} /> Sign out</button></form></nav></details>
       </div>
       <div className="admin-sidebar-scroll"><div className="admin-sidebar-label">Workspace</div>
