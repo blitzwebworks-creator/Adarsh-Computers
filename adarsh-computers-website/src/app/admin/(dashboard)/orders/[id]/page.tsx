@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, UserRound, StickyNote, CreditCard, Clock3 } from "lucide-react";
+import { ArrowLeft, UserRound, StickyNote, CreditCard, Clock3, Trash2 } from "lucide-react";
 import { AdminNotice, AdminPageHeader, StatusBadge } from "@/components/admin/AdminBits";
+import { ConfirmForm } from "@/components/admin/ConfirmForm";
 import { Button } from "@/components/ui/button";
 import { FormSubmitButton } from "@/components/ui/FormSubmitButton";
-import { addOrderNoteAction, updateOrderPaymentAction, updateOrderStatusAction } from "@/lib/actions/admin";
+import { addOrderNoteAction, deleteOrderAction, updateOrderPaymentAction, updateOrderStatusAction } from "@/lib/actions/admin";
 import { getOrder, getOrderNotes, getOrderStatusEvents } from "@/lib/data";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -18,7 +19,7 @@ export default async function AdminOrderDetailPage({ params, searchParams }: { p
   const [order, notes, statusEvents, query] = await Promise.all([getOrder(id), getOrderNotes(id), getOrderStatusEvents(id), searchParams]);
   if (!order) notFound();
   return <>
-    <AdminPageHeader eyebrow="Order details" title={order.reference} description={`Placed ${formatDate(order.created_at)} · ${order.order_items?.length || 0} products`}><Button variant="outline" asChild><Link href="/admin/orders"><ArrowLeft size={15} /> All orders</Link></Button></AdminPageHeader>
+    <AdminPageHeader eyebrow="Order details" title={order.reference} description={`Placed ${formatDate(order.created_at)} · ${order.order_items?.length || 0} products`}><Button variant="outline" asChild><Link href="/admin/orders"><ArrowLeft size={15} /> All orders</Link></Button><ConfirmForm action={deleteOrderAction} message={`Permanently delete order ${order.reference}? Its items, notes, status history and order notification will also be deleted.`}><input type="hidden" name="id" value={order.id} /><Button variant="danger"><Trash2 size={15} /> Delete order</Button></ConfirmForm></AdminPageHeader>
     <AdminNotice notice={query.notice} error={query.error} />
     <div className="admin-order-detail-grid">
       <section className="admin-panel surface"><div className="admin-panel-heading"><div><span className="eyebrow">Customer</span><h2>{order.customer_name}</h2></div><span className="customer-detail-icon"><UserRound size={18} /></span></div>

@@ -383,6 +383,25 @@ export async function updateOrderStatusAction(formData: FormData) {
   redirect("/admin/orders?notice=saved");
 }
 
+export async function deleteOrderAction(formData: FormData) {
+  const { supabase } = await requireAdmin();
+  const id = text(formData, "id");
+  if (!z.string().uuid().safeParse(id).success) redirect("/admin/orders?error=order-delete");
+
+  const { data: existingOrder, error: lookupError } = await supabase.from("orders").select("id").eq("id", id).maybeSingle();
+  if (lookupError || !existingOrder) redirect("/admin/orders?error=order-delete");
+
+  const { data: deletedOrder, error } = await supabase.from("orders").delete().eq("id", id).select("id").maybeSingle();
+  if (error || !deletedOrder) redirect("/admin/orders?error=order-delete");
+
+  revalidatePath("/admin/orders");
+  revalidatePath("/admin/orders/" + id);
+  revalidatePath("/admin/notifications");
+  revalidatePath("/admin");
+  revalidatePath("/account");
+  redirect("/admin/orders?notice=order-deleted");
+}
+
 export async function addOrderNoteAction(formData: FormData) {
   const { supabase, user } = await requireAdmin();
   const id = text(formData, "order_id");
