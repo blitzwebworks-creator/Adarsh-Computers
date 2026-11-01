@@ -432,7 +432,7 @@ button, input, textarea, select { font: inherit; }
 
 /* Administrator workspace */
 .admin-layout { min-height:100vh; display:grid; grid-template-columns:258px minmax(0,1fr); background:#f4f7f5; color:#18251f; }
-.admin-sidebar { position:sticky; top:0; height:100vh; min-height:620px; display:flex; flex-direction:column; padding:22px 15px 16px; background:#09271f; color:#e9f2ec; }
+.admin-sidebar { position:sticky; top:0; height:100vh; height:100dvh; min-height:0; display:flex; flex-direction:column; overflow:hidden; padding:22px 15px 16px; background:#09271f; color:#e9f2ec; }
 .admin-sidebar-head { display:flex; align-items:center; justify-content:space-between; min-height:54px; padding:0 7px 21px; border-bottom:1px solid rgba(225,241,231,.12); }
 .admin-brand { display:inline-flex; align-items:center; gap:11px; color:#fff; }
 .admin-brand-mark { width:36px; height:36px; display:grid; place-items:center; border-radius:11px; background:#48dfcf; color:#06352e; font-size:20px; font-weight:950; box-shadow:0 6px 16px rgba(0,0,0,.16); }
@@ -440,6 +440,10 @@ button, input, textarea, select { font: inherit; }
 .admin-brand strong { font-size:13px; letter-spacing:.1em; line-height:1; }
 .admin-brand small { color:#9bb8a8; font-size:8px; font-weight:800; letter-spacing:.22em; }
 .admin-sidebar-label { padding:25px 10px 10px; color:#789789; font-size:9px; font-weight:850; letter-spacing:.15em; text-transform:uppercase; }
+.admin-sidebar-scroll { min-height:0; flex:1; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:rgba(192,209,199,.32) transparent; }
+.admin-sidebar-scroll::-webkit-scrollbar { width:6px; }
+.admin-sidebar-scroll::-webkit-scrollbar-thumb { border-radius:8px; background:rgba(192,209,199,.32); }
+.admin-sidebar-scroll::-webkit-scrollbar-track { background:transparent; }
 .admin-nav { display:grid; gap:4px; }
 .admin-nav a { min-height:42px; display:flex; align-items:center; gap:11px; padding:0 11px; border:1px solid transparent; border-radius:10px; color:#c0d1c7; font-size:12px; font-weight:620; transition:background .16s,color .16s,border-color .16s; }
 .admin-nav a:hover { background:rgba(255,255,255,.07); color:#fff; }
@@ -564,9 +568,9 @@ button, input, textarea, select { font: inherit; }
 }
 @media (max-width:900px) {
   .admin-layout { display:block; }
-  .admin-sidebar { z-index:20; height:auto; min-height:0; padding:10px 20px; }
+  .admin-sidebar { z-index:20; height:auto; min-height:0; overflow:visible; padding:10px 20px; }
   .admin-sidebar-head { position:relative; min-height:48px; padding:0; border:0; }
-  .admin-sidebar-label,.admin-nav,.admin-sidebar-bottom { display:none; }
+  .admin-sidebar-scroll,.admin-sidebar-bottom { display:none; }
   .admin-mobile-menu { position:relative; display:block; color:#e8f2eb; }
   .admin-mobile-menu summary { width:38px; height:38px; display:grid; place-items:center; border:1px solid rgba(223,237,228,.17); border-radius:10px; }
   .admin-mobile-menu[open] summary { background:rgba(255,255,255,.09); }

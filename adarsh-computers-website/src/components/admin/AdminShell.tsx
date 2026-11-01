@@ -33,8 +33,9 @@ export function AdminShell({ children, email, notifications, unreadCount }: { ch
       <div className="admin-sidebar-head"><Link href="/" className="admin-brand"><span className="admin-brand-mark">A</span><span><strong>ADARSH</strong><small>ADMIN CONSOLE</small></span></Link>
         <details className="admin-mobile-menu"><summary aria-label="Open admin navigation"><Menu size={20} /></summary><nav>{navigation.map(({ href, label, icon: Icon }) => <Link key={href} href={href}><Icon size={16} />{label}</Link>)}<form action={signOutAction}><button><LogOut size={16} /> Sign out</button></form></nav></details>
       </div>
-      <div className="admin-sidebar-label">Workspace</div>
-      <nav className="admin-nav">{navigation.map(({ href, label, icon: Icon }) => <Link key={href} href={href}><Icon size={17} /><span>{label}</span><ArrowUpRight size={13} className="admin-nav-arrow" /></Link>)}</nav>
+      <div className="admin-sidebar-scroll"><div className="admin-sidebar-label">Workspace</div>
+        <nav className="admin-nav">{navigation.map(({ href, label, icon: Icon }) => <Link key={href} href={href}><Icon size={17} /><span>{label}</span><ArrowUpRight size={13} className="admin-nav-arrow" /></Link>)}</nav>
+      </div>
       <div className="admin-sidebar-bottom"><div className="admin-user-dot">{email.slice(0, 1).toUpperCase()}</div><div className="admin-user-meta"><strong>{email}</strong><small>Authorized administrator</small></div><form action={signOutAction}><button type="submit" className="admin-signout" aria-label="Sign out"><LogOut size={17} /></button></form></div>
     </aside>
     <div className="admin-main"><header className="admin-topbar"><div><span className="eyebrow">Adarsh Computers</span><strong>Management workspace</strong></div><div className="admin-topbar-actions"><AdminLiveCenter initialNotifications={notifications} initialUnread={unreadCount} /><Link href="/" target="_blank" rel="noreferrer">View website <ArrowUpRight size={15} /></Link><form action={signOutAction}><button type="submit" aria-label="Sign out"><LogOut size={16} /></button></form></div></header><main className="admin-content">{children}</main><footer className="admin-footer-credit"><span>Digital partner</span><a href="https://blitzwebwork.vercel.app/" target="_blank" rel="noopener noreferrer">BlitzWebWorks <ArrowUpRight size={12} /></a></footer></div>
