@@ -24,7 +24,7 @@ export default async function AdminServicesPage({ searchParams }: { searchParams
         <form action={saveServiceAction} className="admin-form" encType="multipart/form-data"><input type="hidden" name="id" value={editing?.id || ""} /><input type="hidden" name="existing_image" value={editing?.image_url || ""} />
           <FormField label="Service name"><Input name="name" required minLength={2} maxLength={160} defaultValue={editing?.name || ""} placeholder="What service do you offer?" /></FormField>
           <FormField label="Description"><Textarea name="description" maxLength={4000} defaultValue={editing?.description || ""} placeholder="Describe the service clearly." /></FormField>
-          <div className="admin-form-grid"><FormField label="Sort order"><Input name="sort_order" type="number" defaultValue={editing?.sort_order ?? 0} /></FormField><FormField label="Service image"><ImagePicker currentImage={editing?.image_url} /></FormField></div>
+          <div className="admin-form-grid"><FormField label="Sort order"><Input name="sort_order" type="number" defaultValue={editing?.sort_order ?? 0} /></FormField><FormField label="Service image"><ImagePicker folder="services" currentImage={editing?.image_url} /></FormField></div>
           <label className="admin-checkbox-label"><input type="checkbox" name="is_published" defaultChecked={editing?.is_published || false} /> Publish this service</label>
           <Button type="submit"><Plus size={15} /> {editing ? "Save service" : "Add service"}</Button>
         </form>

@@ -9,26 +9,22 @@ import { getSupabaseEnv } from "@/lib/env";
 import { isMissingOptionalProductColumn } from "@/lib/product-compat";
 import { slugify } from "@/lib/utils";
 
-const imageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
-const maxImageBytes = 5 * 1024 * 1024;
-
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
 }
 
-function fileFrom(formData: FormData, key = "image") {
-  const value = formData.get(key);
-  return value instanceof File && value.size > 0 ? value : null;
-}
-
-async function uploadImage(supabase: Awaited<ReturnType<typeof requireAdmin>>["supabase"], file: File, folder: string) {
-  if (!imageTypes.has(file.type) || file.size > maxImageBytes) throw new Error("Choose a JPG, PNG, WebP or AVIF image under 5 MB.");
-  const safeName = file.name.split(/[\\/]/).pop()?.replace(/[^a-zA-Z0-9._-]/g, "-") || "image";
-  const objectPath = folder + "/" + randomUUID() + "-" + safeName;
-  const { error } = await supabase.storage.from("business-media").upload(objectPath, file, { contentType: file.type, cacheControl: "31536000", upsert: false });
-  if (error) throw new Error("Image upload failed. Check the Storage migration and try again.");
-  return supabase.storage.from("business-media").getPublicUrl(objectPath).data.publicUrl;
+function submittedImage(formData: FormData): { url: string | null; invalid: boolean } {
+  const url = text(formData, "uploaded_image_url");
+  if (!url) return { url: null, invalid: false };
+  try {
+    const parsed = new URL(url);
+    const expected = new URL(getSupabaseEnv().url);
+    const valid = parsed.origin === expected.origin && parsed.pathname.startsWith("/storage/v1/object/public/business-media/");
+    return valid ? { url, invalid: false } : { url: null, invalid: true };
+  } catch {
+    return { url: null, invalid: true };
+  }
 }
 
 async function removeImage(supabase: Awaited<ReturnType<typeof requireAdmin>>["supabase"], url: string | null) {
@@ -43,6 +39,8 @@ async function removeImage(supabase: Awaited<ReturnType<typeof requireAdmin>>["s
 
 export async function saveProductAction(formData: FormData) {
   const { supabase } = await requireAdmin();
+  const uploadedImage = submittedImage(formData);
+  if (uploadedImage.invalid) redirect("/admin/products?error=image");
   const id = text(formData, "id") || randomUUID();
   if (!z.string().uuid().safeParse(id).success) redirect("/admin/products?error=id");
   const name = text(formData, "name");
@@ -98,12 +96,7 @@ export async function saveProductAction(formData: FormData) {
   const existingMedia = existingProduct.data as { image_url: string | null; image_urls?: string[] | null } | null;
   const previousImage = existingMedia?.image_url || null;
   const previousGallery = existingMedia?.image_urls || [];
-  const imageFile = fileFrom(formData);
-  let imageUrl = previousImage;
-  if (imageFile) {
-    try { imageUrl = await uploadImage(supabase, imageFile, "products"); }
-    catch { redirect("/admin/products?error=image"); }
-  }
+  let imageUrl = uploadedImage.url || previousImage;
   if (formData.get("remove_image") === "yes") imageUrl = null;
   const productPayload = {
     id,
@@ -136,9 +129,10 @@ export async function saveProductAction(formData: FormData) {
   }
   const { error } = result;
   if (error) {
-    if (imageFile && imageUrl && imageUrl !== previousImage) await removeImage(supabase, imageUrl);
+    if (uploadedImage.url && uploadedImage.url !== previousImage) await removeImage(supabase, uploadedImage.url);
     redirect("/admin/products?error=save");
   }
+  if (uploadedImage.url && uploadedImage.url !== imageUrl) await removeImage(supabase, uploadedImage.url);
   if (previousImage && previousImage !== imageUrl) await removeImage(supabase, previousImage);
   for (const oldImage of previousGallery) if (!imageUrls.includes(oldImage) && oldImage !== imageUrl) await removeImage(supabase, oldImage);
   revalidatePath("/products");
@@ -165,22 +159,23 @@ export async function deleteProductAction(formData: FormData) {
 
 export async function saveCategoryAction(formData: FormData) {
   const { supabase } = await requireAdmin();
+  const uploadedImage = submittedImage(formData);
+  if (uploadedImage.invalid) redirect("/admin/categories?error=image");
   const id = text(formData, "id") || randomUUID();
   const name = text(formData, "name");
   if (!z.string().min(2).max(100).safeParse(name).success) redirect("/admin/categories?error=validation");
   const previousImage = text(formData, "existing_image") || null;
-  let imageUrl = previousImage;
-  const imageFile = fileFrom(formData);
-  if (imageFile) {
-    try { imageUrl = await uploadImage(supabase, imageFile, "categories"); }
-    catch { redirect("/admin/categories?error=image"); }
-  }
+  let imageUrl = uploadedImage.url || previousImage;
   if (formData.get("remove_image") === "yes") imageUrl = null;
   const { error } = await supabase.from("categories").upsert({
     id, name, slug: slugify(name), description: text(formData, "description") || null,
     image_url: imageUrl, sort_order: Number(text(formData, "sort_order") || 0), is_active: formData.get("is_active") === "on", updated_at: new Date().toISOString(),
   }, { onConflict: "id" });
-  if (error) redirect("/admin/categories?error=save");
+  if (error) {
+    if (uploadedImage.url && uploadedImage.url !== previousImage) await removeImage(supabase, uploadedImage.url);
+    redirect("/admin/categories?error=save");
+  }
+  if (uploadedImage.url && uploadedImage.url !== imageUrl) await removeImage(supabase, uploadedImage.url);
   if (previousImage && previousImage !== imageUrl) await removeImage(supabase, previousImage);
   revalidatePath("/products");
   revalidatePath("/");
@@ -203,23 +198,24 @@ export async function deleteCategoryAction(formData: FormData) {
 
 export async function saveServiceAction(formData: FormData) {
   const { supabase } = await requireAdmin();
+  const uploadedImage = submittedImage(formData);
+  if (uploadedImage.invalid) redirect("/admin/services?error=image");
   const id = text(formData, "id") || randomUUID();
   const name = text(formData, "name");
   const description = text(formData, "description");
   if (!z.string().min(2).max(160).safeParse(name).success || !z.string().max(4000).safeParse(description).success) redirect("/admin/services?error=validation");
   const previousImage = text(formData, "existing_image") || null;
-  let imageUrl = previousImage;
-  const imageFile = fileFrom(formData);
-  if (imageFile) {
-    try { imageUrl = await uploadImage(supabase, imageFile, "services"); }
-    catch { redirect("/admin/services?error=image"); }
-  }
+  let imageUrl = uploadedImage.url || previousImage;
   if (formData.get("remove_image") === "yes") imageUrl = null;
   const { error } = await supabase.from("services").upsert({
     id, name, description: description || null, image_url: imageUrl,
     is_published: formData.get("is_published") === "on", sort_order: Number(text(formData, "sort_order") || 0), updated_at: new Date().toISOString(),
   }, { onConflict: "id" });
-  if (error) redirect("/admin/services?error=save");
+  if (error) {
+    if (uploadedImage.url && uploadedImage.url !== previousImage) await removeImage(supabase, uploadedImage.url);
+    redirect("/admin/services?error=save");
+  }
+  if (uploadedImage.url && uploadedImage.url !== imageUrl) await removeImage(supabase, uploadedImage.url);
   if (previousImage && previousImage !== imageUrl) await removeImage(supabase, previousImage);
   revalidatePath("/services");
   revalidatePath("/admin/services");
@@ -291,6 +287,8 @@ export async function saveSiteSettingsAction(formData: FormData) {
   const { supabase, user } = await requireAdmin();
   const key = text(formData, "key");
   if (!["home", "about", "business"].includes(key)) redirect("/admin/content?error=validation");
+  const uploadedImage = submittedImage(formData);
+  if (uploadedImage.invalid) redirect("/admin/settings?error=image");
   const previous = await supabase.from("site_settings").select("value").eq("key", key).maybeSingle();
   const current = (previous.data?.value && typeof previous.data.value === "object" ? previous.data.value : {}) as Record<string, unknown>;
   const value: Record<string, unknown> = { ...current };
@@ -310,15 +308,15 @@ export async function saveSiteSettingsAction(formData: FormData) {
       } catch { redirect("/admin/settings?error=validation"); }
     }
   }
-  const logoFile = fileFrom(formData, "image");
-  if (logoFile) {
-    try { value.logo_url = await uploadImage(supabase, logoFile, "business"); }
-    catch { redirect("/admin/settings?error=image"); }
-  }
+  if (key === "business" && uploadedImage.url) value.logo_url = uploadedImage.url;
   if (formData.get("remove_image") === "yes") value.logo_url = "";
   const { error } = await supabase.from("site_settings").upsert({ key, value, is_public: true, updated_at: new Date().toISOString(), updated_by: user.id }, { onConflict: "key" });
-  if (error) redirect("/admin/" + (key === "business" ? "settings" : "content") + "?error=save");
+  if (error) {
+    if (uploadedImage.url && uploadedImage.url !== current.logo_url) await removeImage(supabase, uploadedImage.url);
+    redirect("/admin/" + (key === "business" ? "settings" : "content") + "?error=save");
+  }
   const oldLogo = typeof current.logo_url === "string" ? current.logo_url : null;
+  if (uploadedImage.url && uploadedImage.url !== value.logo_url) await removeImage(supabase, uploadedImage.url);
   if (key === "business" && oldLogo && oldLogo !== value.logo_url) await removeImage(supabase, oldLogo);
   revalidatePath("/");
   revalidatePath("/about");

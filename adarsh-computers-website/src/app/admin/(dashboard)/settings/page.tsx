@@ -27,7 +27,7 @@ export default async function AdminSettingsPage({ searchParams }: { searchParams
       <div className="admin-form-grid"><FormField label="Facebook URL"><Input name="facebook_url" type="url" maxLength={500} defaultValue={String(business.facebook_url || "")} /></FormField><FormField label="Instagram URL"><Input name="instagram_url" type="url" maxLength={500} defaultValue={String(business.instagram_url || "")} /></FormField><FormField label="LinkedIn URL"><Input name="linkedin_url" type="url" maxLength={500} defaultValue={String(business.linkedin_url || "")} /></FormField></div>
       <div className="admin-form-grid"><FormField label="GSTIN"><Input name="gstin" maxLength={20} defaultValue={String(business.gstin || "")} /></FormField><FormField label="Google Maps link"><Input name="map_url" type="url" maxLength={500} defaultValue={getBusinessMapUrl(business as { map_url?: string } | null)} /></FormField></div>
       <FormField label="Associated brands" hint="Separate each brand with a comma."><Input name="brands" maxLength={500} defaultValue={brands} /></FormField>
-      <div className="admin-field"><span>Business logo</span><ImagePicker currentImage={String(business.logo_url || "") || null} /></div>
+      <div className="admin-field"><span>Business logo</span><ImagePicker folder="business" currentImage={String(business.logo_url || "") || null} /></div>
       <Button type="submit">Save business settings</Button>
     </form></section>
   </>;

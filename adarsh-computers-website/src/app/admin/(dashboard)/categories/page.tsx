@@ -24,7 +24,7 @@ export default async function AdminCategoriesPage({ searchParams }: { searchPara
         <form action={saveCategoryAction} className="admin-form" encType="multipart/form-data"><input type="hidden" name="id" value={editing?.id || ""} /><input type="hidden" name="existing_image" value={editing?.image_url || ""} />
           <FormField label="Category name"><Input name="name" required minLength={2} maxLength={100} defaultValue={editing?.name || ""} placeholder="For example, monitors" /></FormField>
           <FormField label="Description"><Textarea name="description" maxLength={600} defaultValue={editing?.description || ""} placeholder="A short description for customers." /></FormField>
-          <div className="admin-form-grid"><FormField label="Sort order"><Input name="sort_order" type="number" defaultValue={editing?.sort_order ?? 0} /></FormField><div className="admin-field"><span>Category image</span><ImagePicker currentImage={editing?.image_url} /></div></div>
+          <div className="admin-form-grid"><FormField label="Sort order"><Input name="sort_order" type="number" defaultValue={editing?.sort_order ?? 0} /></FormField><div className="admin-field"><span>Category image</span><ImagePicker folder="categories" currentImage={editing?.image_url} /></div></div>
           <label className="admin-checkbox-label"><input type="checkbox" name="is_active" defaultChecked={editing?.is_active ?? true} /> Show this category on the website</label>
           <Button type="submit"><Plus size={15} /> {editing ? "Save category" : "Add category"}</Button>
         </form>

@@ -519,6 +519,21 @@ button, input, textarea, select { font: inherit; }
 .admin-form textarea { min-height:100px; resize:vertical; line-height:1.5; }
 .admin-form input:focus,.admin-form textarea:focus,.admin-select:focus { border-color:#32866a; box-shadow:0 0 0 3px rgba(50,134,106,.1); }
 .admin-form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+.image-picker { display:grid; justify-items:start; gap:8px; }
+.image-picker-preview { position:relative; width:132px; height:96px; overflow:hidden; border:1px solid #e1e9e3; border-radius:11px; background:#f4f7f4; }
+.image-picker-preview > img { object-fit:cover; }
+.image-picker-remove { position:absolute; top:6px; right:6px; width:28px; height:28px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.8); border-radius:50%; background:rgba(255,255,255,.95); color:#30463a; cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,.12); }
+.image-picker-remove:disabled { cursor:wait; opacity:.55; }
+.image-picker-empty,.image-replace { position:relative; min-height:38px; display:inline-flex !important; align-items:center; justify-content:center; gap:7px; padding:0 12px; border:1px solid #d8e4dc; border-radius:9px; background:#fff; color:#25624a !important; font-size:11px !important; font-weight:750 !important; cursor:pointer; transition:border-color .16s,background .16s,box-shadow .16s; }
+.image-picker-empty:hover,.image-replace:hover { border-color:#8bb99b; background:#f7fbf8; box-shadow:0 4px 12px rgba(17,83,53,.07); }
+.image-picker-empty[aria-disabled="true"],.image-replace[aria-disabled="true"] { cursor:wait; opacity:.75; }
+.image-picker input[type="file"] { position:absolute; width:1px !important; height:1px !important; min-height:0 !important; overflow:hidden; padding:0 !important; border:0 !important; opacity:0; }
+.image-picker label:focus-within { outline:2px solid #32866a; outline-offset:2px; }
+.image-picker-spinner { animation:spin .9s linear infinite; }
+.image-picker-message { max-width:360px; line-height:1.45; }
+.image-picker-message-uploaded { color:#247248; }
+.image-picker-message-uploading { color:#526a5c; }
+.image-picker-message-error { color:#af3026; }
 .admin-content-grid { align-items:start; }
 .admin-checkbox-label,.admin-checkbox-row { display:flex; align-items:center; flex-wrap:wrap; gap:11px 17px; }
 .admin-checkbox-label,.admin-checkbox-row label { color:#58695f; font-size:10px; font-weight:650; }
